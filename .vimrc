@@ -24,7 +24,14 @@ set foldlevelstart=99       " 打开文件是默认不折叠代码
 nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
 
 
-"---------------------YCM 配置--------------------------------
+let g:go_fmt_command = "goimports"
+" 解决nerdcommenter 注释会删除的问题
+let g:mapleader = ","
+
+
+"-----------------------------------------------------
+"---------------------YCM 配置------------------------
+"-----------------------------------------------------
 
 " 补全菜单的开启与关闭
 set completeopt=longest,menu                    " 让Vim的补全菜单行为与一般IDE一致(参考VimTip1228)
@@ -32,7 +39,6 @@ let g:ycm_min_num_of_chars_for_completion=2     " 从第2个键入字符就开�
 let g:ycm_cache_omnifunc=0                      " 禁止缓存匹配项,每次都重新生成匹配项
 let g:ycm_autoclose_preview_window_after_completion=1           " 智能关闭自动补全窗口
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif         " 离开插入模式后自动关闭预览窗口
-
 
 " 开启各种补全引擎
 let g:ycm_collect_identifiers_from_tags_files=1         " 开启 YCM 基于标签引擎
@@ -47,13 +53,15 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 0 " 注释和字符串
 "nnoremap <leader>lc :lclose<CR>    "close locationlist
 "inoremap <leader><leader> <C-x><C-o>
 
-"nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR> " 跳转到定义处
+"nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"map <C-d> :YcmCompleter GoToDefinitionElseDeclaration<CR>
 let g:ycm_confirm_extra_conf=0                  " 关闭加载.ycm_extra_conf.py确认提示
 
-"---------------------YCM 配置--------------------------------
 
 
-"---------------------NERDTree 配置--------------------------
+"-----------------------------------------------------
+"---------------------NERDTree配置--------------------
+"-----------------------------------------------------
 " 在 vim 启动的时候默认开启 NERDTree（autocmd 可以缩写为 au）
 "autocmd VimEnter * NERDTree
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
@@ -62,7 +70,7 @@ autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " 将 NERDTree 的窗口设置在 vim 窗口的右侧（默认为左侧）
-let NERDTreeWinPos="left"
+"let NERDTreeWinPos="left"
 
 " 显示行号
 let NERDTreeShowLineNumbers=1
@@ -72,8 +80,74 @@ let NERDTreeAutoCenter=1
 let NERDTreeShowBookmarks=1
 map <C-n> :NERDTreeToggle<CR>
 
-"---------------------NERDTree 配置--------------------------
 
+"--------------------------------------------------------------------------
+"vim-airline
+"--------------------------------------------------------------------------
+let g:airline_theme="molokai"
+
+"这个是安装字体后 必须设置此项"
+let g:airline_powerline_fonts = 1
+
+ "打开tabline功能,方便查看Buffer和切换,省去了minibufexpl插件
+ let g:airline#extensions#tabline#enabled = 1
+ let g:airline#extensions#tabline#buffer_nr_show = 1
+
+"设置切换Buffer快捷键"
+ nnoremap <C-tab> :bn<CR>
+ nnoremap <C-s-tab> :bp<CR>
+ " 关闭状态显示空白符号计数
+ let g:airline#extensions#whitespace#enabled = 0
+ let g:airline#extensions#whitespace#symbol = '!'
+ " 设置consolas字体"前面已经设置过
+ "set guifont=Consolas\ for\ Powerline\ FixedD:h11
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+  " old vim-powerline symbols
+
+let g:airline_left_sep = '▶'
+let g:airline_left_alt_sep = '❯'
+let g:airline_right_sep = '◀'
+let g:airline_right_alt_sep = '❮'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.branch = '⎇'
+
+
+"--------------------------------------------------------------------------
+"gotags
+"--------------------------------------------------------------------------
+nmap <F8> :TagbarToggle<CR>
+let g:tagbar_type_go = {
+	\ 'ctagstype' : 'go',
+	\ 'kinds'     : [
+		\ 'p:package',
+		\ 'i:imports:1',
+		\ 'c:constants',
+		\ 'v:variables',
+		\ 't:types',
+		\ 'n:interfaces',
+		\ 'w:fields',
+		\ 'e:embedded',
+		\ 'm:methods',
+		\ 'r:constructor',
+		\ 'f:functions'
+	\ ],
+	\ 'sro' : '.',
+	\ 'kind2scope' : {
+		\ 't' : 'ctype',
+		\ 'n' : 'ntype'
+	\ },
+	\ 'scope2kind' : {
+		\ 'ctype' : 't',
+		\ 'ntype' : 'n'
+	\ },
+	\ 'ctagsbin'  : 'gotags',
+	\ 'ctagsargs' : '-sort -silent'
+\ }
+
+
+"------------------------------------------------------------
 
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -106,8 +180,15 @@ Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 
 Plugin 'Blackrush/vim-gocode'
 Plugin 'fatih/vim-go'
+Plugin 'dgryski/vim-godef'
+Plugin 'majutsushi/tagbar'
+
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
