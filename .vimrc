@@ -1,3 +1,6 @@
+set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
+set enc=utf8
+set fencs=utf8,gbk,gb2312,gb18030
 syn on
 " 解决插入模式下delete/backspce键失效问题
 set backspace=2
@@ -15,7 +18,7 @@ set hls "检索时高亮显示匹配项
 set helplang=cn "帮助系统设置为中文
 
 set foldenable              " 开始折叠
-set foldmethod=syntax       " 设置语法折叠
+set foldmethod=syntax " 设置语法折叠
 set foldcolumn=0            " 设置折叠区域的宽度
 "setlocal foldlevel=1        " 设置折叠层数为
 set foldlevelstart=99       " 打开文件是默认不折叠代码
@@ -27,6 +30,30 @@ nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
 let g:go_fmt_command = "goimports"
 " 解决nerdcommenter 注释会删除的问题
 let g:mapleader = ","
+
+
+"-----------------------------------------------------
+"---------------------javascript配置------------------------
+"-----------------------------------------------------
+let g:javascript_plugin_jsdoc = 1
+
+autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
+" for json
+autocmd FileType json noremap <buffer> <c-f> :call JsonBeautify()<cr>
+" for jsx
+autocmd FileType jsx noremap <buffer> <c-f> :call JsxBeautify()<cr>
+" for html
+autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
+" for css or scss
+autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+
+
+"-----------------------------------------------------
+"---------------------Yapf配置------------------------
+"-----------------------------------------------------
+let g:yapf_style = "pep8"
+autocmd FileType python nnoremap <leader>= :0,$!yapf<CR>
+"nnoremap <leader>p :call yapf#YAPF()<cr>
 
 
 "-----------------------------------------------------
@@ -189,6 +216,11 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 
+Plugin 'google/yapf', { 'rtp': 'plugins/vim' }
+Plugin 'pangloss/vim-javascript'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'maksimr/vim-jsbeautify'
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -204,8 +236,3 @@ filetype plugin indent on    " required
 "
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
-
-" Local config
-if filereadable($HOME . "/.vimrc.local")
-  source ~/.vimrc.local
-endif
